@@ -1,5 +1,4 @@
-const User = require('../models/user')
-
+const User = require('../models/user');
 const { body,validationResult } = require('express-validator/check');
 const { sanitizeBody } = require('express-validator/filter');
 const bcrypt = require('bcrypt');
@@ -8,6 +7,7 @@ const bcrypt = require('bcrypt');
 // Display user registration form
 exports.user_registration_get = (req, res, next) =>{
     res.render('register', { title: 'Registration' });
+    return;
 };
 
 // Handle user registration form
@@ -49,25 +49,22 @@ exports.user_registration_post = [
               return;
           }
           else {
-              // Data from form is valid.
-              user.save(function (err) {
-                  if (err) { 
-
+                //  Data from form is valid.
+                  user.save()
+                  .then(()=> {
+                      res.redirect('/users/login');
+                    })
+                  .catch(error => {
                     // Return error for duplicate values
-                      if(err.code === 11000){
+                    if(error.code === 11000){
                         let regex = /index\:\ (?:.*\.)?\$?(?:([_a-z0-9]*)(?:_\d*)|([_a-z0-9]*))\s*dup key/i,      
-                        match =  err.message.match(regex),  
+                        match =  error.message.match(regex),  
                         indexName = match[1] || match[2];  
                         var errorMsg = { msg : indexName + ' already exist. Please use different ' + indexName };
-
                         res.render('register', { title: 'Registration', user: user, errors: new Array(errorMsg)});
-                        return;
                       }
-                      else
-                        return next(err); 
-                    }
-                     // Successful - redirect to new author record.
-                     res.redirect('/users/login');
+                      else 
+                        return next(error);
                   });
           }
         });
