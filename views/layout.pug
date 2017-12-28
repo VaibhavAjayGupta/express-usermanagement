@@ -11,5 +11,26 @@ html(lang='en')
     link(href='https://getbootstrap.com/dist/css/bootstrap.min.css', rel='stylesheet')
     // Custom styles for this template
     link(href='/stylesheets/style.css', rel='stylesheet')
-  body.container
-    block content
+  body
+    nav.navbar.navbar-expand-md.navbar-dark.bg-dark.fixed-top
+      a.navbar-brand(href="#") Express User Management
+      |       
+      button.navbar-toggler(type="button", data-toggle="collapse", data-target="#navbarsExampleDefault", aria-controls="navbarsExampleDefault", aria-expanded="false", aria-label="Toggle navigation")
+        span.navbar-toggler-icon
+      |       
+      #navbarsExampleDefault.collapse.navbar-collapse
+        ul.navbar-nav.mr-auto
+          li.nav-item
+            a.nav-link(href="/") Home 
+          |           
+          li.nav-item
+            a.nav-link(href="/users/register") Register
+          |           
+          li.nav-item
+            a.nav-link(href="/users/login") Login
+          |           
+          li.nav-item
+            a.nav-link(href="/users/profile") Profile
+    main.container(role="main")
+      .page-template
+      block content
