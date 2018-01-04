@@ -2,7 +2,8 @@ const User = require('../models/user');
 const { body, validationResult } = require('express-validator/check');
 const { sanitizeBody } = require('express-validator/filter');
 const bcrypt = require('bcrypt');
-const passport = require('passport');
+const passport = require('passport'),
+    LocalStrategy = require('passport-local').Strategy;
 
 
 // Display user registration form
@@ -54,7 +55,7 @@ exports.user_registration_post = [
                 // save user  
                 user.save()
                     .then(() => {
-                        req.flash('success','Registration completed successfully. You can login now.');
+                        req.flash('success', 'Registration completed successfully. You can login now.');
                         let redirectUrl = '/users/login/' + user.username;
                         res.redirect(redirectUrl);
                     })
@@ -78,15 +79,41 @@ exports.user_registration_post = [
 ];
 
 // Passort serialize and Deserialize
-passport.serializeUser(function(user, done) {
-    done(null, user.id);
-  });
-  
-  passport.deserializeUser(function(id, done) {
+passport.serializeUser(function (user, done) {
+    done(null, user._id);
+});
+
+passport.deserializeUser(function (id, done) {
     User.findById(id, function (err, user) {
-      done(err, user);
+        done(err, user);
     });
-  });
+});
+
+// Passport local strategy
+passport.use(new LocalStrategy({
+    passReqToCallback: true // pass request to the callback
+},
+    function (req, username, password, done) {
+        User.findOne({ username: username }, function (err, user) {
+            if (err) { return done(err); }
+            if (!user) {
+                req.flash('danger', 'Incorrect username or password');
+                return done(null, false);
+            }
+            user.comparePassword(password, function (err, result) {
+                if (err)
+                    return next(err);
+                if (!result) {
+                    req.flash('danger', 'Incorrect  password');
+                    return done(null, false);
+                }
+                return done(null, user);
+
+            });
+
+        });
+    }
+));
 
 // Display user login form
 exports.user_login_get = (req, res, next) => {
@@ -95,14 +122,18 @@ exports.user_login_get = (req, res, next) => {
 
 // Display user login form with username
 exports.user_login_get_username = (req, res, next) => {
-    let user = {'username':req.params.username};
-    res.render('login', { title: 'Login', user:user });
+    let user = { 'username': req.params.username };
+    res.render('login', { title: 'Login', user: user });
 };
 
 // Handle user login form
-exports.user_login_post = (req, res, next) => {
-    res.render('login', { title: 'Login' });
-};
+exports.user_login_post = [
+    passport.authenticate('local', {
+        successRedirect: 'users/profile',
+        failureRedirect: '/users/login',
+        failureFlash: true
+    })
+];
 
 // Display user information
 exports.user_detail = (req, res, next) => {

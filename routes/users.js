@@ -20,7 +20,7 @@ router.get('/login', user_controller.user_login_get);
 router.get('/login/:username', user_controller.user_login_get_username);
 
 // Login post route
-router.post('/login', user_controller.user_login_post);
+router.post(['/login','/login/:username'], user_controller.user_login_post);
 
 //  GET users listing. 
 router.get('/', function(req, res, next) {
