@@ -16,6 +16,9 @@ router.post('/register', user_controller.user_registration_post);
 // Login get route
 router.get('/login', user_controller.user_login_get);
 
+// Login get route with username
+router.get('/login/:username', user_controller.user_login_get_username);
+
 // Login post route
 router.post('/login', user_controller.user_login_post);
 

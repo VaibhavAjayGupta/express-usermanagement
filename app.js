@@ -5,6 +5,8 @@ const favicon = require('serve-favicon');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
+const session = require('express-session');
+const passport = require('passport');
 
 
 const index = require('./routes/index');
@@ -28,6 +30,27 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Session middleware
+app.use(session({
+  secret: 'dasdadasrrtretdfsdf',
+  resave: false,
+  saveUninitialized: false,
+  // cookie: { secure: true }
+}));
+
+// Passport/Authorization middleware
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Flash messages middleware
+app.use(require('connect-flash')());
+app.use(function (req, res, next) {
+  res.locals.messages = require('express-messages')(req, res);
+  next();
+});
+
+
+// Routes
 app.use('/', index);
 app.use('/users', users);
 

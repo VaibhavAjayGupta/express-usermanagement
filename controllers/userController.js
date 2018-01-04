@@ -2,6 +2,7 @@ const User = require('../models/user');
 const { body, validationResult } = require('express-validator/check');
 const { sanitizeBody } = require('express-validator/filter');
 const bcrypt = require('bcrypt');
+const passport = require('passport');
 
 
 // Display user registration form
@@ -53,7 +54,9 @@ exports.user_registration_post = [
                 // save user  
                 user.save()
                     .then(() => {
-                        res.redirect('/users/login');
+                        req.flash('success','Registration completed successfully. You can login now.');
+                        let redirectUrl = '/users/login/' + user.username;
+                        res.redirect(redirectUrl);
                     })
                     .catch(error => {
                         // Return error for duplicate values
@@ -74,9 +77,26 @@ exports.user_registration_post = [
     }
 ];
 
+// Passort serialize and Deserialize
+passport.serializeUser(function(user, done) {
+    done(null, user.id);
+  });
+  
+  passport.deserializeUser(function(id, done) {
+    User.findById(id, function (err, user) {
+      done(err, user);
+    });
+  });
+
 // Display user login form
 exports.user_login_get = (req, res, next) => {
     res.render('login', { title: 'Login' });
+};
+
+// Display user login form with username
+exports.user_login_get_username = (req, res, next) => {
+    let user = {'username':req.params.username};
+    res.render('login', { title: 'Login', user:user });
 };
 
 // Handle user login form
