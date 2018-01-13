@@ -6,6 +6,7 @@ const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
 const passport = require('passport');
 
 
@@ -17,6 +18,7 @@ const app = express();
 
 // Setup database connection
 require('./models/db.js');
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -35,6 +37,10 @@ app.use(session({
   secret: 'dasdadasrrtretdfsdf',
   resave: false,
   saveUninitialized: false,
+  store: new MongoStore({
+     url: process.env.MONGODB_URI,
+     autoRemove: 'native' 
+  })
   // cookie: { secure: true }
 }));
 

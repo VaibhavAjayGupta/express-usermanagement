@@ -8,7 +8,7 @@ var UserSchema = new Schema(
   {
     username: { type: String, required: true, max: 100, unique: true },
     email: { type: String, required: true, max: 100, unique: true },
-    password: { type: String, required: true },
+    password: { type: String, required: true }
   }
 );
 
@@ -19,16 +19,17 @@ UserSchema
     return '/users/' + this._id
   });
 
-UserSchema.methods.generatePassword = function (candidatePassword, cb) {
-  bcrypt.compare(candidatePassword, this.password).then((res) => {
-    return cb(null, res); // res==true for success
+UserSchema.methods.hashPassword = function (enteredPassword, cb) {
+  bcrypt.hash(enteredPassword, 3).then((hash) =>{
+    this.password = hash; 
+    return cb(null);               
   }).catch(error => {
     return cb(error);
   });
 };
 
-UserSchema.methods.comparePassword = function (candidatePassword, cb) {
-  bcrypt.compare(candidatePassword, this.password).then((res) => {
+UserSchema.methods.checkPassword = function (enteredPassword, cb) {
+  bcrypt.compare(enteredPassword, this.password).then((res) => {
     return cb(null, res); // res==true for success
   }).catch(error => {
     return cb(error);

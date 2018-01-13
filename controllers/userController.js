@@ -1,15 +1,15 @@
 const User = require('../models/user');
 const { body, validationResult } = require('express-validator/check');
 const { sanitizeBody } = require('express-validator/filter');
-const bcrypt = require('bcrypt');
-const passport = require('passport'),
-    LocalStrategy = require('passport-local').Strategy;
+
+// Passport modules 
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
 
 
 // Display user registration form
 exports.user_registration_get = (req, res, next) => {
-    res.render('register', { title: 'Registration' });
-    return;
+    return res.render('register', { title: 'Registration' });
 };
 
 // Handle user registration form
@@ -36,28 +36,28 @@ exports.user_registration_post = [
             // There are errors. Render form again with sanitized values/errors messages.
             delete req.body.password;
             delete req.body.confirmPassword;
-            res.render('register', { title: 'Registration', user: req.body, errors: errors.array() });
-            return;
+            return res.render('register', { title: 'Registration', user: req.body, errors: errors.array() });
         }
         else {
             //  Data from form is valid.
 
-            // Hash the password
-            bcrypt.hash(req.body.password, 3).then(function (hash) {
+            // Create a User object 
+            var user = new User({
+                    username: req.body.username,
+                    email: req.body.email
+                });
 
-                // Create a User object with hashed password.
-                var user = new User(
-                    {
-                        username: req.body.username,
-                        email: req.body.email,
-                        password: hash
-                    });
-                // save user  
+            // Hash and save the password
+            user.hashPassword(req.body.password, (err) => {
+                if (err)
+                    return next(err);
+
+                // save user to database
                 user.save()
                     .then(() => {
                         req.flash('success', 'Registration completed successfully. You can login now.');
                         let redirectUrl = '/users/login/' + user.username;
-                        res.redirect(redirectUrl);
+                        return res.redirect(redirectUrl);
                     })
                     .catch(error => {
                         // Return error for duplicate values
@@ -66,13 +66,11 @@ exports.user_registration_post = [
                                 match = error.message.match(regex),
                                 indexName = match[1] || match[2];
                             var errorMsg = { msg: indexName + ' already exist. Please use different ' + indexName };
-                            res.render('register', { title: 'Registration', user: user, errors: new Array(errorMsg) });
-                            return;
+                            return res.render('register', { title: 'Registration', user: user, errors: new Array(errorMsg) });
                         }
                         else
                             return next(error);
                     });
-
             });
         }
     }
@@ -100,7 +98,7 @@ passport.use(new LocalStrategy({
                 req.flash('danger', 'Incorrect username or password');
                 return done(null, false);
             }
-            user.comparePassword(password, function (err, result) {
+            user.checkPassword(password, function (err, result) {
                 if (err)
                     return next(err);
                 if (!result) {
@@ -108,28 +106,26 @@ passport.use(new LocalStrategy({
                     return done(null, false);
                 }
                 return done(null, user);
-
             });
-
         });
     }
 ));
 
 // Display user login form
 exports.user_login_get = (req, res, next) => {
-    res.render('login', { title: 'Login' });
+    return res.render('login', { title: 'Login' });
 };
 
 // Display user login form with username
 exports.user_login_get_username = (req, res, next) => {
     let user = { 'username': req.params.username };
-    res.render('login', { title: 'Login', user: user });
+    return res.render('login', { title: 'Login', user: user });
 };
 
 // Handle user login form
 exports.user_login_post = [
     passport.authenticate('local', {
-        successRedirect: 'users/profile',
+        successRedirect: '/users/profile',
         failureRedirect: '/users/login',
         failureFlash: true
     })
@@ -137,5 +133,5 @@ exports.user_login_post = [
 
 // Display user information
 exports.user_detail = (req, res, next) => {
-    res.render('register', { title: 'User Detail' });
+    return res.render('register', { title: 'User Detail' });
 };
