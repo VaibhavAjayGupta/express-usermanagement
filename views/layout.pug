@@ -8,7 +8,7 @@ html(lang='en')
     link(rel='icon', href='../../../../favicon.ico')
     title Express Usermanagement
     // Bootstrap core CSS
-    link(href='https://getbootstrap.com/dist/css/bootstrap.min.css', rel='stylesheet')
+    link(href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css', rel='stylesheet')
     // Custom styles for this template
     link(href='/stylesheets/style.css', rel='stylesheet')
   body
@@ -30,7 +30,10 @@ html(lang='en')
             a.nav-link(href="/users/login") Login
           |           
           li.nav-item
-            a.nav-link(href="/users/profile") Profile
+            a.nav-link(href="/users/") Profile
+          |           
+          li.nav-item
+            a.nav-link(href="/users/logout") Logout
     main.container(role="main")
       .page-template
       block content

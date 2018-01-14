@@ -8,7 +8,7 @@ var UserSchema = new Schema(
   {
     username: { type: String, required: true, max: 100, unique: true },
     email: { type: String, required: true, max: 100, unique: true },
-    password: { type: String, required: true }
+    password: { type: String, required: true, select: false } // "select:false" for hiding the password in all user find requests
   }
 );
 
@@ -16,7 +16,7 @@ var UserSchema = new Schema(
 UserSchema
   .virtual('url')
   .get(function () {
-    return '/users/' + this._id
+    return '/users/' + this._id;
   });
 
 UserSchema.methods.hashPassword = function (enteredPassword, cb) {
