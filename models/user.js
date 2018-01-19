@@ -6,9 +6,25 @@ var Schema = mongoose.Schema;
 
 var UserSchema = new Schema(
   {
-    username: { type: String, required: true, max: 100, unique: true },
-    email: { type: String, required: true, max: 100, unique: true },
-    password: { type: String, required: true, select: false } // "select:false" for hiding the password in all user find requests
+    username: { type: String, max: 100, unique: true, required: true },
+    email: { type: String, max: 100, unique: true, required: true },
+    password: { type: String, select: false }, // "select:false" for hiding the password in all user find requests
+    displayName: { type: String, max: 100 },
+    facebook: {
+      id: String,
+      accessToken: String,
+      email: String
+    },
+    twitter: {
+      id: String,
+      token: String,
+      email: String
+    },
+    google: {
+      id: String,
+      token: String,
+      email: String
+    }
   }
 );
 
@@ -20,9 +36,9 @@ UserSchema
   });
 
 UserSchema.methods.hashPassword = function (enteredPassword, cb) {
-  bcrypt.hash(enteredPassword, 3).then((hash) =>{
-    this.password = hash; 
-    return cb(null);               
+  bcrypt.hash(enteredPassword, 3).then((hash) => {
+    this.password = hash;
+    return cb(null);
   }).catch(error => {
     return cb(error);
   });

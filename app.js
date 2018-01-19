@@ -10,6 +10,7 @@ const MongoStore = require('connect-mongo')(session);
 const passport = require('passport');
 
 
+require('./config/passport.js'); // setup passport strategies
 const index = require('./routes/index');
 const users = require('./routes/users');
 
@@ -17,7 +18,7 @@ const users = require('./routes/users');
 const app = express();
 
 // Setup database connection
-require('./models/db.js');
+require('./config/db.js');
 
 
 // view engine setup

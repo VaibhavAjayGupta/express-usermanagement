@@ -2,11 +2,12 @@ const User = require('../models/user');
 const { body, validationResult } = require('express-validator/check');
 const { sanitizeBody } = require('express-validator/filter');
 const passport = require('passport');
-const passportAuth = require('../config/passport.js');
+const authController = require('./authController.js');
+const utils = require('../config/utils.js');
 
 // Display user registration form
 exports.user_registration_get = [
-    passportAuth.notLoggedIn,
+    authController.notLoggedIn,
     (req, res, next) => {
         return res.render('register', { title: 'Registration' });
     }
@@ -28,7 +29,6 @@ exports.user_registration_post = [
 
     // Process request after validation and sanitization
     (req, res, next) => {
-
         // Extract the validation errors from a request 
         const errors = validationResult(req);
 
@@ -36,7 +36,7 @@ exports.user_registration_post = [
             // There are errors. Render form again with sanitized values/errors messages.
             delete req.body.password;
             delete req.body.confirmPassword;
-            return res.render('register', { title: 'Registration', user: req.body, errors: errors.array() });
+            return res.render('register', { title: 'Registration', formData: req.body, errors: errors.array() });
         }
         else {
             //  Data from form is valid.
@@ -62,11 +62,9 @@ exports.user_registration_post = [
                     .catch(error => {
                         // Return error for duplicate values
                         if (error.code === 11000) {
-                            let regex = /index\:\ (?:.*\.)?\$?(?:([_a-z0-9]*)(?:_\d*)|([_a-z0-9]*))\s*dup key/i,
-                                match = error.message.match(regex),
-                                indexName = match[1] || match[2];
+                            let indexName = utils.indexName(error);
                             var errorMsg = { msg: indexName + ' already exist. Please use different ' + indexName };
-                            return res.render('register', { title: 'Registration', user: user, errors: new Array(errorMsg) });
+                            return res.render('register', { title: 'Registration', formData: user, errors: new Array(errorMsg) });
                         }
                         else
                             return next(error);
@@ -78,7 +76,7 @@ exports.user_registration_post = [
 
 // Display user login form
 exports.user_login_get = [
-    passportAuth.notLoggedIn,
+    authController.notLoggedIn,
     (req, res, next) => {
         return res.render('login', { title: 'Login' });
     }
@@ -86,10 +84,10 @@ exports.user_login_get = [
 
 // Display user login form with username
 exports.user_login_get_username = [
-    passportAuth.notLoggedIn,
+    authController.notLoggedIn,
     (req, res, next) => {
         let user = { 'username': req.params.username };
-        return res.render('login', { title: 'Login', user: user });
+        return res.render('login', { title: 'Login', formData: user });
     }
 ];
 
@@ -102,12 +100,49 @@ exports.user_login_post = [
     })
 ];
 
+//////////////////////////////////////////////////////////// FB Login /////////////////////////////////////////////////////////
+
+// Handle fb login
+exports.user_fblogin_get = passport.authenticate('facebook',{ scope: ['email'] });
+
+// fb callback
+exports.user_fblogin_callback_get = passport.authenticate('facebook',
+    {
+        successRedirect: '/users/',
+        failureRedirect: '/users/login'
+    });
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////// Google Login /////////////////////////////////////////////////////////
+
+// Handle Google login
+exports.user_googlelogin_get = passport.authenticate('google',{ scope: ['email'] });
+
+// Google callback
+exports.user_googlelogin_callback_get = passport.authenticate('google',
+    {
+        successRedirect: '/users/',
+        failureRedirect: '/users/login'
+    });
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 // Display user information
 exports.user_get = [
-    passportAuth.isAuthenticated,
+    authController.isAuthenticated,
     (req, res, next) => {
-        return res.render('user', { title: 'User Detail', user: req.user });
+        return res.render('user', { title: 'User Details', user: req.user });
     }
 ];
+
+// Display user login form
+exports.user_logout_get =
+    (req, res, next) => {
+        req.logout();
+        res.redirect('/users/login');
+        req.session.destroy();
+        return;
+    };
 
 

@@ -8,10 +8,17 @@ block content
   form(method='POST' action='')
     .form-group
       label(for='username') Username
-      input#username.form-control(type='text', name='username' required='true', placeholder='Username', value=(user===undefined ? '' : user.username))
+      input#username.form-control(type='text', name='username' required='true', placeholder='Username', value=(formData===undefined ? '' : formData.username))
     .form-group
       label(for='password') Password
       input#password.form-control(type='password', name='password' required='true', placeholder='Password')
     button.btn.btn-primary(type='submit') Submit
+  br
+  a.btn.btn-primary(href='/users/auth/facebook')
+    span.fa.fa-facebook
+    |  Login with Facebook
+  a.btn.btn-primary(href='/users/auth/google')
+    span.fa.fa-facebook
+    |  Login with Google
 
 

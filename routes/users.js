@@ -22,8 +22,23 @@ router.get('/login/:username', user_controller.user_login_get_username);
 // Login post route
 router.post(['/login','/login/:username'], user_controller.user_login_post);
 
+// Login with fb get route
+router.get('/auth/facebook', user_controller.user_fblogin_get);
+
+// Login with fb callback get route
+router.get('/auth/facebook/callback',user_controller.user_fblogin_callback_get);
+
+// Login with google get route
+router.get('/auth/google', user_controller.user_googlelogin_get);
+
+// Login with google callback get route
+router.get('/auth/google/callback',user_controller.user_googlelogin_callback_get);
+
 // User profile get route
 router.get('/', user_controller.user_get);
+
+// User logout get route
+router.get('/logout', user_controller.user_logout_get);
 
 ///////////////////////////////////////////////////////////////////////////////
 

@@ -7,10 +7,10 @@ block content
   form(method='POST' action='')
     .form-group
       label(for='username') Username
-      input#username.form-control(type='text', name='username' required='true', placeholder='Username', value=(user===undefined ? '' : user.username))
+      input#username.form-control(type='text', name='username' required='true', placeholder='Username', value=(formData===undefined ? '' : formData.username))
     .form-group
       label(for='email') Email address
-      input#email.form-control(type='email', name='email' required='true', placeholder='Enter email', value=(user===undefined ? '' : user.email) )
+      input#email.form-control(type='email', name='email' required='true', placeholder='Enter email', value=(formData===undefined ? '' : formData.email) )
       small#emailHelp.form-text.text-muted We'll never share your email with anyone else.
     .form-group
       label(for='password') Password

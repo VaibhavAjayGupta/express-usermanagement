@@ -22,18 +22,21 @@ html(lang='en')
         ul.navbar-nav.mr-auto
           li.nav-item
             a.nav-link(href="/") Home 
-          |           
-          li.nav-item
-            a.nav-link(href="/users/register") Register
-          |           
-          li.nav-item
-            a.nav-link(href="/users/login") Login
+          | 
+          if !user           
+            li.nav-item
+              a.nav-link(href="/users/register") Register
+          | 
+          if !user          
+            li.nav-item
+              a.nav-link(href="/users/login") Login
           |           
           li.nav-item
             a.nav-link(href="/users/") Profile
-          |           
-          li.nav-item
-            a.nav-link(href="/users/logout") Logout
+          |
+          if user           
+            li.nav-item
+              a.nav-link(href="/users/logout") Logout
     main.container(role="main")
       .page-template
       block content
