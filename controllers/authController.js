@@ -9,7 +9,6 @@ exports.isAuthenticated = (req, res, next) => {
 
 // Check if user is not logged in
 exports.notLoggedIn = (req, res, next) => {
-  console.log(req.user);
     if (!req.isAuthenticated()) {
       return next();
     }

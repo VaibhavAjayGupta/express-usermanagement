@@ -73,8 +73,17 @@ passport.use(new FacebookStrategy({
                     } else {
                         let options = { runValidators: true, upsert: true };
                         user.update({ $set: updatedUser }, options, function (err, result) {
-                            if (err)
-                                return done(err);
+                            if (err) {
+                                if (err.code === 11000) {
+                                    let indexName = utils.indexName(err);
+                                    let errMsg = utils.capitalize(indexName) + ' already linked to another account. Please login with that account or click forgot password.'
+                                    req.flash('danger', errMsg);
+                                    return done(null, false);
+                                }
+                                else {
+                                    return done(err);
+                                }
+                            }
                             user.facebook.accessToken = accessToken;
                             user.email = updatedEmail;
                             user.displayName = updatedDisplayName;
@@ -96,8 +105,17 @@ passport.use(new FacebookStrategy({
 
                     // save our new user to the database
                     newUser.save(function (err) {
-                        if (err)
-                            return done(err);
+                        if (err) {
+                            if (err.code === 11000) {
+                                let indexName = utils.indexName(err);
+                                let errMsg = utils.capitalize(indexName) + ' already linked to another account. Please login with that account or click forgot password.'
+                                req.flash('danger', errMsg);
+                                return done(null, false);
+                            }
+                            else {
+                                return done(err);
+                            }
+                        }
 
                         // if successful, return the new user
                         return done(null, newUser);
@@ -118,8 +136,10 @@ passport.use(new FacebookStrategy({
 
             // save the user
             user.save(function (err) {
-                if (err)
+                if (err) {
                     return done(err);
+                }
+                // Successfull return the created user
                 return done(null, user);
             });
 
@@ -160,16 +180,16 @@ passport.use(new GoogleStrategy({
                         return done(null, user);
                     } else {
                         let options = { runValidators: true, upsert: true };
-                        user.update({ $set: updatedUser }, options, function (error, result) {
-                            if (error) {
-                                if (error.code === 11000) {
-                                    let indexName = utils.indexName(error);
-                                    var errorMsg = { msg: indexName + ' already exist. Please use different ' + indexName };
-                                    req.flash('error', errorMsg);
-                                    return done(null,false);
+                        user.update({ $set: updatedUser }, options, function (err, result) {
+                            if (err) {
+                                if (err.code === 11000) {
+                                    let indexName = utils.indexName(err);
+                                    let errMsg = utils.capitalize(indexName) + ' already linked to another account. Please login with that account or click forgot password.'
+                                    req.flash('danger', errMsg);
+                                    return done(null, false);
                                 }
                                 else {
-                                    return done(error);
+                                    return done(err);
                                 }
                             }
                             user.google.accessToken = accessToken;
@@ -191,16 +211,16 @@ passport.use(new GoogleStrategy({
                         });
 
                     // save our new user to the database
-                    newUser.save(function (error) {
-                        if (error) {
-                            if (error.code === 11000) {
-                                let indexName = utils.indexName(error);
-                                var errorMsg = { msg: indexName + ' already exist. Please use different ' + indexName };
-                                req.flash('danger', errorMsg.msg);
-                                return done(null,false);
+                    newUser.save(function (err) {
+                        if (err) {
+                            if (err.code === 11000) {
+                                let indexName = utils.indexName(err);
+                                let errMsg = utils.capitalize(indexName) + ' already linked to another account. Please login with that account or click forgot password.'
+                                req.flash('danger', errMsg);
+                                return done(null, false);
                             }
                             else {
-                                return done(error);
+                                return done(err);
                             }
                         }
 
