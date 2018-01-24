@@ -11,32 +11,24 @@ html(lang='en')
     link(href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css', rel='stylesheet')
     // Custom styles for this template
     link(href='/stylesheets/style.css', rel='stylesheet')
+    // Font Awesome CDN
+    script(defer='', src='https://use.fontawesome.com/releases/v5.0.4/js/all.js')
+
   body
-    nav.navbar.navbar-expand-md.navbar-dark.bg-dark.fixed-top
-      a.navbar-brand(href="#") Express User Management
-      |       
-      button.navbar-toggler(type="button", data-toggle="collapse", data-target="#navbarsExampleDefault", aria-controls="navbarsExampleDefault", aria-expanded="false", aria-label="Toggle navigation")
-        span.navbar-toggler-icon
-      |       
-      #navbarsExampleDefault.collapse.navbar-collapse
-        ul.navbar-nav.mr-auto
-          li.nav-item
-            a.nav-link(href="/") Home 
-          | 
-          if !user           
-            li.nav-item
-              a.nav-link(href="/users/register") Register
-          | 
-          if !user          
-            li.nav-item
-              a.nav-link(href="/users/login") Login
-          |           
-          li.nav-item
-            a.nav-link(href="/users/") Profile
-          |
-          if user           
-            li.nav-item
-              a.nav-link(href="/users/logout") Logout
+    .d-flex.flex-column.flex-md-row.align-items-center.p-3.px-md-4.mb-3.bg-dark.border-bottom.box-shadow
+      h5.my-0.mr-md-auto.font-weight-normal.text-light Express User Management
+      nav.my-2.my-md-0.mr-md-3
+        a.p-2.text-light(href="/") Home 
+        if !user
+          a.p-2.text-light(href="/users/login") Login
+        a.p-2.text-light(href="/users/") Profile
+        if user 
+          a.btn.btn-outline-primary.bg-light(href="/users/logout") Logout
+        if !user
+          a.btn.btn-outline-primary.bg-light(href="/users/register") Register
     main.container(role="main")
       .page-template
       block content
+    script(src='https://code.jquery.com/jquery-3.2.1.slim.min.js', integrity='sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN', crossorigin='anonymous')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js', integrity='sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q', crossorigin='anonymous')
+    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js', integrity='sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl', crossorigin='anonymous')

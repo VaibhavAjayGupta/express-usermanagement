@@ -1,8 +1,21 @@
-body {
-  padding: 50px;
+html {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
 
+.container {
+  max-width: 960px;
+}
+
+.border-top { border-top: 1px solid #e5e5e5; }
+.border-bottom { border-bottom: 1px solid #e5e5e5; }
+
+.box-shadow { box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05); }
+  
 a {
   color: #00B7FF;
 }
@@ -12,4 +25,20 @@ a {
 }
 h1 {
   text-align: center;
+}
+
+.fb_button{
+  background-color: #3B5998;
+  margin: 0.5em;
+}
+.google_button{
+  background-color:#d34836;
+  margin: 0.5em;
+}
+.small_margin_right{
+  margin-right: 0.3em;
+}
+.small_margin_left{
+  font-size: 1.2em;
+  margin-left: 0.3em;
 }

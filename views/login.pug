@@ -12,13 +12,17 @@ block content
     .form-group
       label(for='password') Password
       input#password.form-control(type='password', name='password' required='true', placeholder='Password')
-    button.btn.btn-primary(type='submit') Submit
+    button.btn.btn-primary(type='submit') Login
+    a.badge.badge-info.small_margin_left(href='/users/forgotpassword')
+      | Forgot Password ?
+    a.badge.badge-warning.small_margin_left(href='/users/register')
+      | Create new account.
   br
-  a.btn.btn-primary(href='/users/auth/facebook')
-    span.fa.fa-facebook
-    |  Login with Facebook
-  a.btn.btn-primary(href='/users/auth/google')
-    span.fa.fa-facebook
-    |  Login with Google
+  a.btn.btn-primary.fb_button(href='/users/auth/facebook')
+    span.fab.fa-facebook.small_margin_right
+    |  Sign in with Facebook
+  a.btn.btn-primary.google_button(href='/users/auth/google')
+    span.fab.fa-google-plus.small_margin_right
+    |  Sign in with Google
 
 

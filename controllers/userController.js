@@ -36,7 +36,7 @@ exports.user_registration_post = [
             // There are errors. Render form again with sanitized values/errors messages.
             delete req.body.password;
             delete req.body.confirmPassword;
-            return res.render('register', { title: 'Registration', formData: req.body, errors: errors.array() });
+            return res.render('register', { title: 'Registration', formData: req.body, errors: errors.array()});
         }
         else {
             //  Data from form is valid.

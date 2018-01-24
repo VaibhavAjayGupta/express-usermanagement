@@ -1,4 +1,4 @@
-// Authenticate request i.e is user loggedin
+// Authenticated request i.e user is loggedin
 exports.isAuthenticated = (req, res, next) => {
     if (req.isAuthenticated()) {
       return next();
@@ -7,7 +7,7 @@ exports.isAuthenticated = (req, res, next) => {
     return res.redirect('/users/login');
   };
 
-// Check if user is not logged in
+// Check if user is logged in or not
 exports.notLoggedIn = (req, res, next) => {
     if (!req.isAuthenticated()) {
       return next();
